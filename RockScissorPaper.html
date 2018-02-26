@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors Part 2</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+  
+  <!-- Custom styles for this template -->
+  <link href="https://getbootstrap.com/docs/3.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+
+</head>
+
+<body>
+  
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-center" style = "text-align: center; font-size: 5em;" >ROUND #  <span id = "numberofround"></span></p>
+      </div>
+    </div>
+
+    <div class="row">
+      
+      <div class="col-md-6">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h2 style = "margin: 0.75em 0;"><strong >PRESS YOUR CHOICE BELOW</strong></h2>
+            </div>
+        </div>
+
+        <div class="row" style="margin: 1em 0;">
+            <div class="col-md-3">
+                <button id ="0" type="button" class="btn btn-primary" onclick="btnfunction(this.id)">ROCK</button> 
+            </div>
+          
+            <div class="col-md-3">
+                <button id ="1" type="button" class="btn btn-primary" onclick="btnfunction(this.id)">PAPER</button> 
+            </div>
+          
+            <div class="col-md-3">
+                <button id ="2" type="button" class="btn btn-primary" onclick="btnfunction(this.id)">SCISSOR</button>
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-offset-2 col-md-10">
+            <span id = "yourimg"  style = "padding: 1em 0;" ><img src = "Images/9-RPS-example.png"  height="200" width="200" ></span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-12">
+            <h2 style = "margin: 0.75em 0; padding-bottom:2em;"><strong>COMPUTER'S CHOICE BELOW</strong></h2>
+          </div>  
+        </div>  
+
+        <div class="row">
+            <div class="col-md-offset-2 col-md-10">
+              <span id = "comimg"  style = "padding: 1em 0;" ><img src = "Images/9-RPS-example.png"  height="200" width="200" ></span>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" style="height:50px;"></div>
+
+    <div class="row" style = "background-color:aquamarine;">
+        <div class="col-md-4">
+          <p class="text-center" style = "text-align: center; font-size: 2em; margin: 0.75em 0; " >You Wins #  <span id = "numberofwin">0</span></p>
+        </div>
+        <div class="col-md-4">
+          <p class="text-center" style = "text-align: center; font-size: 2em; margin: 0.75em 0; " >You Losses #  <span id = "numberoflose">0</span></p>
+        </div>
+        <div class="col-md-4">
+          <p class="text-center" style = "text-align: center; font-size: 2em; margin: 0.75em 0; " >Ties #  <span id = "numberoftie">0</span></p>
+        </div>
+    </div>
+
+    <div class="row" style="height:25px;"></div>
+
+    <div class="row">
+      <button type="button" class="btn btn-primary btn-lg btn-block" onclick ="resetGame()">RESET THE GAME</button>
+    </div>
+
+  </div>
+
+</body>
+
+
+  <script type="text/javascript">
+
+    var round = 0;
+    var winnum = 0;
+    var losenum = 0;
+    var tienum = 0;
+
+    var roundDisplay = document.getElementById("numberofround");
+    var winDisplay = document.getElementById("numberofwin");
+    var loseDisplay = document.getElementById("numberoflose");
+    var tieDisplay = document.getElementById("numberoftie");
+    var yourImgDisplay = document.getElementById("yourimg");
+    var computerGuessDisplay = document.getElementById("comimg");
+    var computerimgindex = null;
+
+    var imagelist = ["Images/rock.jpg","Images/paper.jpg","Images/scissors.jpg"];
+
+    function getRandomInt(num) {
+      return Math.floor(Math.random() * Math.floor(num));
+    }
+
+
+    function winCheck(num1, num2) {
+      
+      var checkResult = [false,false]
+      
+      if ((num1 + 1) % 3 === num2) {
+        checkResult[0] = true;
+      } else if (num1 === num2) {
+        checkResult[1] = true;
+      }
+
+      return checkResult;
+    }
+
+    function btnfunction(clicked_id) {
+
+      clicked_id_num = Number(clicked_id);
+
+      console.log("The current image array key for Player is:", clicked_id_num);
+
+      yourImgDisplay.innerHTML = '<img src =" ' + imagelist[clicked_id_num] +' "  alt="your pick display" height="200" width="200"/>';
+      round ++;
+      roundDisplay.textContent = round;
+
+      computerimgindex = getRandomInt(3);
+      console.log("The current image array key for Computer is:", computerimgindex);
+      computerGuessDisplay.innerHTML = '<img src =" ' + imagelist[computerimgindex] +' "  alt="your pick display" height="200" width="200"/>';
+
+      var checkResult = winCheck(computerimgindex,clicked_id_num);
+
+      if (checkResult[0]) {
+        winnum++;
+        winDisplay.textContent = winnum;
+      } else if (checkResult[1]) {
+        tienum++;
+        tieDisplay.textContent = tienum;
+      } else {
+        losenum++;
+        loseDisplay.textContent = losenum;
+      }
+      
+    }
+
+    function resetGame() {
+      round = 0;
+      roundDisplay.textContent = round;
+      winnum = 0;
+      winDisplay.textContent = winnum;
+      losenum = 0;
+      loseDisplay.textContent = losenum;
+      tienum = 0;
+      tieDisplay.textContent = tienum;
+      computerGuessDisplay.innerHTML = '<img src = "Images/9-RPS-example.png"  height="200" width="200" alt="your pick display"/>';
+      yourImgDisplay.innerHTML = '<img src = "Images/9-RPS-example.png"  height="200" width="200" alt="your pick display"/>';
+    }
+
+  </script>
+
+</body>
+
+</html>
