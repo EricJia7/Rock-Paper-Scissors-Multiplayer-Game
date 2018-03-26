@@ -14,9 +14,8 @@
   
   <section>
     <div class="container">
-      <div class="jumbotron" style="background-color: #20315A ; color: white;">
-          <h1 class="text-center text-uppercase"><strong><i class="fa fa-newspaper-o"></i>Rock Paper Scissor Game</strong></h1>
-          <h2 class="text-center" id ="alertMessagge" style="color: red"></h2>
+      <div class="jumbotron" style="background-color: #3C6478 ; color: white;">
+          <h1 class="text-center text-uppercase"><strong id ="alertMessagge">Rock Paper Scissor Game</strong></h1>
       </div>
 
       <div class = "row">
@@ -32,87 +31,120 @@
             <div class="col-md-2"></div>
         </form>
       </div>
+
+      <div class="row" >
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <button type="button" class="btn btn-primary btn-block leaveGameBtn text-uppercase" id = "resetDiv">Click to leave the game</button>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+
+      <div class="row" style="height:25px;"></div>
     
       <div class="row">
         
-        <div class="col-md-6">
+        <div class="col-md-6" style = "background-color:#43ABC9">
 
           <div class="row">
-              <div class="col-md-12">
-                  <h3 style = "margin: 0.75em 0" id = "playerA" class = "text-uppercase"><strong ></strong></h3>
-              </div>
+            <div class="col-md-12">
+              <h3 style = "margin: 0.75em 0; font-weight: bold; color: white" id = "player1" class = "text-uppercase text-center font-weight-bold "><strong>Waiting for Player 1</strong></h3>
+            </div>
+          </div>
+
+          <div class = "row">
+            <div class="col-md-12" id="player1Notice" class = "text-uppercase text-center font-weight-bold"></div>
           </div>
 
           <div class="row" style="margin: 1em 0;">
+            <div class="col-md-1"></div>
               <div class="col-md-3">
-                  <button id ="0" type="button" class="btn btn-primary rockBtnA">ROCK</button> 
+                  <button rspVal ="0" type="button" class="btn btn-primary" id="player1rockBtn">ROCK</button> 
               </div>
-            
               <div class="col-md-3">
-                  <button id ="1" type="button" class="btn btn-primary paperBtnA">PAPER</button> 
+                  <button rspVal ="1" type="button" class="btn btn-primary" id="player1paperBtn">PAPER</button> 
               </div>
-            
               <div class="col-md-3">
-                  <button id ="2" type="button" class="btn btn-primary scissorBtnA">SCISSOR</button>
+                  <button rspVal ="2" type="button" class="btn btn-primary" id="player1scissorBtn">SCISSOR</button>
               </div>
+              <div class="col-md-1"></div>
           </div>
 
           <div class="row">
-            <div class="col-md-offset-2 col-md-10">
+            <div class="col-md-offset-3 col-md-9" id="player1ImgDis">
               <span id = "yourimg"  style = "padding: 1em 0;" ><img src = "assets/Images/9-RPS-example.png"  height="200" width="200" ></span>
             </div>
           </div>
 
+          <div class="row" style="height:25px;"></div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1WDisplay">P1 Wins # 0 <span id = "numberofwin"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1LDisplay">P1 Losses # 0<span id = "numberoflose"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1TDisplay">P1 Ties # 0<span id = "numberoftie"></span></p>
+            </div>
+          </div>
+
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-6" style = "background-color:#B5C689">
+
           <div class="row">
             <div class="col-md-12">
-              <h3 style = "margin: 0.75em 0" id = "playerB" class = "text-uppercase"><strong></strong></h3>
+              <h3 style = "margin: 0.75em 0; font-weight: bold;" id = "player2" class = "text-uppercase text-center font-weight-bold">Waiting for Player 2</h3>
             </div>  
           </div>  
 
-        <div class="row" style="margin: 1em 0;">
+          <div class = "row">
+            <div class="col-md-12" id="player2Notice" class = "text-uppercase text-center font-weight-bold"></div>
+          </div>
+
+          <div class="row" style="margin: 1em 0;" id = "player2rpsImgRow">
+            <div class="col-md-1"></div>
             <div class="col-md-3">
-                <button id ="0" type="button" class="btn btn-primary rockBtnB">ROCK</button> 
+                <button rspVal ="0" type="button" class="btn btn-danger" id="player2rockBtn" >ROCK</button> 
             </div>
-          
             <div class="col-md-3">
-                <button id ="1" type="button" class="btn btn-primary paperBtnB">PAPER</button> 
+                <button rspVal ="1" type="button" class="btn btn-danger" id="player2paperBtn">PAPER</button> 
             </div>
-          
             <div class="col-md-3">
-                <button id ="2" type="button" class="btn btn-primary scissorBtnB">SCISSOR</button>
+                <button rspVal ="2" type="button" class="btn btn-danger" id="player2scissorBtn">SCISSOR</button>
             </div>
-        </div>
+            <div class="col-md-1"></div>
+          </div>
 
           <div class="row">
-              <div class="col-md-offset-2 col-md-10">
+              <div class="col-md-offset-3 col-md-9" id="player2ImgDis">
                 <span id = "comimg"  style = "padding: 1em 0;" ><img src = "assets/Images/9-RPS-example.png"  height="200" width="200" ></span>
               </div>
           </div>
+
+          <div class="row" style="height:25px;"></div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2WDisplay">P2 Wins # 0<span id = "numberofwin"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2LDisplay">P2 Losses # 0<span id = "numberoflose"></span></p>
+            </div>
+            <div class="col-md-4">
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2TDisplay">P2 Ties # 0<span id = "numberoftie"></span></p>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div class="row" style="height:50px;"></div>
 
-      <div class="row" style = "background-color:aquamarine;">
-          <div class="col-md-4">
-            <p class="text-center winDisplay" style = "text-align: center; font-size: 2em; margin: 0.75em 0;" >You Wins #  <span id = "numberofwin">0</span></p>
-          </div>
-          <div class="col-md-4">
-            <p class="text-center loseDisplay" style = "text-align: center; font-size: 2em; margin: 0.75em 0;" >You Losses #  <span id = "numberoflose">0</span></p>
-          </div>
-          <div class="col-md-4">
-            <p class="text-center tieDisplay" style = "text-align: center; font-size: 2em; margin: 0.75em 0;" >Ties #  <span id = "numberoftie">0</span></p>
-          </div>
       </div>
+      <!-- <div class="row" style="height:50px;"></div> -->
 
       <div class="row" style="height:25px;"></div>
-
-      <div class="row">
-        <button type="button" class="btn btn-primary btn-lg btn-block leaveGameBtn text-uppercase">leave the game</button>
-      </div>
 
     </div>
   </section>
