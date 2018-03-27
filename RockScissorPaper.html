@@ -5,9 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rock Paper Scissors Multiplayer Game</title>
+  <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
   <link href="https://getbootstrap.com/docs/3.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+     
+  <link rel="stylesheet" type="text/css" media="screen" href ="assets/css/style.css">
+  
 </head>
 
 <body>
@@ -45,17 +49,14 @@
       <div class="row">
         
         <div class="col-md-6" style = "background-color:#43ABC9">
-
           <div class="row">
             <div class="col-md-12">
               <h3 style = "margin: 0.75em 0; font-weight: bold; color: white" id = "player1" class = "text-uppercase text-center font-weight-bold "><strong>Waiting for Player 1</strong></h3>
             </div>
           </div>
-
           <div class = "row">
-            <div class="col-md-12" id="player1Notice" class = "text-uppercase text-center font-weight-bold"></div>
+            <div class="col-md-12" id="player1Notice"></div>
           </div>
-
           <div class="row" style="margin: 1em 0;">
             <div class="col-md-1"></div>
               <div class="col-md-3">
@@ -69,31 +70,26 @@
               </div>
               <div class="col-md-1"></div>
           </div>
-
           <div class="row">
             <div class="col-md-offset-3 col-md-9" id="player1ImgDis">
               <span id = "yourimg"  style = "padding: 1em 0;" ><img src = "assets/Images/9-RPS-example.png"  height="200" width="200" ></span>
             </div>
           </div>
-
           <div class="row" style="height:25px;"></div>
-
           <div class="row">
             <div class="col-md-4">
-              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1WDisplay">P1 Wins # 0 <span id = "numberofwin"></span></p>
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player1WDisplay">P1 Wins # 0 <span id = "numberofwin"></span></p>
             </div>
             <div class="col-md-4">
-              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1LDisplay">P1 Losses # 0<span id = "numberoflose"></span></p>
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player1LDisplay">P1 Losses # 0<span id = "numberoflose"></span></p>
             </div>
             <div class="col-md-4">
-              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player1TDisplay">P1 Ties # 0<span id = "numberoftie"></span></p>
+              <p class="text-center bg-primary" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player1TDisplay">P1 Ties # 0<span id = "numberoftie"></span></p>
             </div>
           </div>
-
         </div>
 
         <div class="col-md-6" style = "background-color:#B5C689">
-
           <div class="row">
             <div class="col-md-12">
               <h3 style = "margin: 0.75em 0; font-weight: bold;" id = "player2" class = "text-uppercase text-center font-weight-bold">Waiting for Player 2</h3>
@@ -101,7 +97,7 @@
           </div>  
 
           <div class = "row">
-            <div class="col-md-12" id="player2Notice" class = "text-uppercase text-center font-weight-bold"></div>
+            <div class="col-md-12" id="player2Notice"></div>
           </div>
 
           <div class="row" style="margin: 1em 0;" id = "player2rpsImgRow">
@@ -117,42 +113,33 @@
             </div>
             <div class="col-md-1"></div>
           </div>
-
           <div class="row">
               <div class="col-md-offset-3 col-md-9" id="player2ImgDis">
                 <span id = "comimg"  style = "padding: 1em 0;" ><img src = "assets/Images/9-RPS-example.png"  height="200" width="200" ></span>
               </div>
           </div>
-
           <div class="row" style="height:25px;"></div>
-
           <div class="row">
             <div class="col-md-4">
-              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2WDisplay">P2 Wins # 0<span id = "numberofwin"></span></p>
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player2WDisplay">P2 Wins # 0<span id = "numberofwin"></span></p>
             </div>
             <div class="col-md-4">
-              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2LDisplay">P2 Losses # 0<span id = "numberoflose"></span></p>
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player2LDisplay">P2 Losses # 0<span id = "numberoflose"></span></p>
             </div>
             <div class="col-md-4">
-              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.1em; margin: 0.75em 0;" id = "player2TDisplay">P2 Ties # 0<span id = "numberoftie"></span></p>
+              <p class="text-center bg-danger" style = "text-align: center; font-size: 1.2em; margin: 0.75em 0;" id = "player2TDisplay">P2 Ties # 0<span id = "numberoftie"></span></p>
             </div>
           </div>
 
         </div>
-
-
       </div>
-      <!-- <div class="row" style="height:50px;"></div> -->
-
       <div class="row" style="height:25px;"></div>
-
     </div>
   </section>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
   <script type="text/javascript" charset="UTF-8" src="assets/javascript/game.js"></script>
-
 
 </body>
 

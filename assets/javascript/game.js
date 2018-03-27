@@ -13,6 +13,8 @@ var database = firebase.database();
 
 var player1 = false;
 var player2 = false;
+var isPlayer1Turn = false;
+var isPlayer2Turn = false;
 var player1Name;
 var player2Name;
 var onlinePlayer = 0;
@@ -38,7 +40,6 @@ function winCheck(num1, num2) {
   return checkResult;
 };
 
-
 function setPlayer(name) {
   database.ref().once("value") 
     .then(function(snapshot){
@@ -56,11 +57,17 @@ function setPlayer(name) {
         $("#enterRow").empty();
         onlinePlayer = 0;
         player1 = true;
+        isPlayer1Turn = true;
+        isPlayer2Turn = false;
       }
       else if (playerNum == 1) {
         $("#enterRow").empty();
         onlinePlayer = 1;
         player2 = true;
+        database.ref().child("player2").update({turn:false});
+        database.ref().child("player1").update({turn:true});
+        isPlayer1Turn = true;
+        isPlayer2Turn = false;
       }; 
       var newPlayer = {
         name: name,
@@ -68,6 +75,7 @@ function setPlayer(name) {
         lose: 0,
         tie: 0,
         rps:"",
+        turn: false,
       };
       database.ref().child(player[onlinePlayer]).set(newPlayer);
 
@@ -93,18 +101,30 @@ function gameon() {
 function gameResult(snapshot, str1, str2, boolean1, boolean2) {
 
   var playersnapshot = snapshot;
-  var playerName = snapshot.val().name;
-  var playerWin = snapshot.val().win;
-  var winStr = playerName.split(" ")[0] + " Wins # " + playerWin;
-  var playerLose = snapshot.val().lose;
-  var loseStr = playerName.split(" ")[0] + " Losses # " + playerLose;
-  var playerTie = snapshot.val().tie;
-  var tieStr = playerName.split(" ")[0] + " Ties # " + playerTie;
+  var playerName = playersnapshot.name;
+  console.log("~~~~~~~~~~~~~~~~"+ playerName);
+  console.log("~~~~~~~~~~~~~~~~"+ typeof(playerName));
+
+  var playerWin = playersnapshot.win;
+  var playerLose = playersnapshot.lose;
+  var playerTie = playersnapshot.tie;
+  if(playerName) {
+    var winStr = playerName.split(" ")[0] + " Wins # " + playerWin;
+    var loseStr = playerName.split(" ")[0] + " Losses # " + playerLose;
+    var tieStr = playerName.split(" ")[0] + " Ties # " + playerTie;
+  };
   var rpsImgHeight = $("#"+str2+"rpsImgRow").innerHeight()
+
   var headerStr = playerName + " is now " + str1;
-  
+  if (playersnapshot.key === "player1") {
+    player1Name = playerName;
+  };
+  if (playersnapshot.key === "player2") {
+    player2Name = playerName;
+  };
+
   $("#" + str1).text(headerStr).addClass("font-weight-bold");
-  $("#"+ str1 + "WDisplay").text(winStr);
+  $("#"+ str1 + "WDisplay").text(winStr); 
   $("#"+ str1 + "LDisplay").text(loseStr);
   $("#"+ str1 + "TDisplay").text(tieStr);
 
@@ -114,27 +134,54 @@ function gameResult(snapshot, str1, str2, boolean1, boolean2) {
     $("#"+str2+"scissorBtn").hide();
     $("#"+str2+"ImgDis").css("margin-top","33px");
   };
+  return playerName;
 }
 
 database.ref("player1").on("value", function(snapshot){
-  var playerStr = "player1";
-  var playerStrOppo = "player2";
-  gameResult(snapshot, playerStr, playerStrOppo, player2, player1);
+  if(snapshot.val() != null) {
+    var playerStr = "player1";
+    var playerStrOppo = "player2";
+    player1Name = gameResult(snapshot.val(), playerStr, playerStrOppo, player2, player1); 
+  }
+},function(errorObject) {
+  console.log("Errors handled: " + errorObject.code);
 });
 
 database.ref("player2").on("value", function(snapshot){
-  var playerStr = "player2";
-  var playerStrOppo = "player1"
-  gameResult(snapshot, playerStr, playerStrOppo, player1, player2);
+  if(snapshot.val()!= null) {
+    var playerStr = "player2";
+    var playerStrOppo = "player1"
+    player2Name = gameResult(snapshot.val(), playerStr, playerStrOppo, player1, player2);
+    noticeDisplay();
+  };
+},function(errorObject) {
+  console.log("Errors handled: " + errorObject.code);
 });
 
 function noticeDisplay() {
-  if(player1) {
-    $("#player1Notice").val() = "It's Your Turn";
+
+  if(isPlayer1Turn && !isPlayer2Turn && player1Name != null) {
+    $("#player1Notice").empty();
+    $("#player2Notice").empty();
+    $("#player1Notice").append("<h4>It's Your Turn</h4>")
+      .children()
+      .addClass("text-capitalize text-center")
+      .css("color", "white")
+      .css("margin", "0");
+    $("#player2Notice").css("margin-top","18px");
   };
-  if(player2) {
-    $("#player2Notice").val() = "Waiting for" + player1Name + "to choose";
-  };
+  
+  if(!isPlayer1Turn && isPlayer2Turn && player2Name !=null) {
+    $("#player1Notice").empty();
+    $("#player2Notice").empty();
+    $("#player2Notice").append("<h4>Waiting for " + player2Name.split(" ")[0] + " to choose</h4>")
+    .children()
+    .addClass("text-capitalize text-center")
+    .css("color", "white")
+    .css("margin", "0");
+    $("#player1Notice").css("margin-top","18px");
+    };
+
 };
 
 gameon();
