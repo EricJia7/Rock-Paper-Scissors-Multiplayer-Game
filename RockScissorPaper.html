@@ -39,7 +39,14 @@
       <div class="row" >
         <div class="col-md-3"></div>
         <div class="col-md-6">
-          <button type="button" class="btn btn-primary btn-block leaveGameBtn text-uppercase" id = "resetDiv">Click to leave the game</button>
+          <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-lg btn-default  btn-block leaveGameBtn text-uppercase" style="background-color: #3C6478" id = "resetDiv">Click to leave the game</button>
+            </div>
+            <div class="col-md-12">
+                <p id = "playerNotice"></p>
+            </div>
+          </div>
         </div>
         <div class="col-md-3"></div>
       </div>
@@ -54,19 +61,17 @@
               <h3 style = "margin: 0.75em 0; font-weight: bold; color: white" id = "player1" class = "text-uppercase text-center font-weight-bold "><strong>Waiting for Player 1</strong></h3>
             </div>
           </div>
-          <div class = "row">
-            <div class="col-md-12" id="player1Notice"></div>
-          </div>
+
           <div class="row" style="margin: 1em 0;">
             <div class="col-md-1"></div>
               <div class="col-md-3">
-                  <button rspVal ="0" type="button" class="btn btn-primary" id="player1rockBtn">ROCK</button> 
+                  <button rspVal ="0" type="button" class="btn btn-primary playerBtn" id="player1rockBtn">ROCK</button> 
               </div>
               <div class="col-md-3">
-                  <button rspVal ="1" type="button" class="btn btn-primary" id="player1paperBtn">PAPER</button> 
+                  <button rspVal ="1" type="button" class="btn btn-primary playerBtn" id="player1paperBtn">PAPER</button> 
               </div>
               <div class="col-md-3">
-                  <button rspVal ="2" type="button" class="btn btn-primary" id="player1scissorBtn">SCISSOR</button>
+                  <button rspVal ="2" type="button" class="btn btn-primary playerBtn" id="player1scissorBtn">SCISSOR</button>
               </div>
               <div class="col-md-1"></div>
           </div>
@@ -96,20 +101,16 @@
             </div>  
           </div>  
 
-          <div class = "row">
-            <div class="col-md-12" id="player2Notice"></div>
-          </div>
-
           <div class="row" style="margin: 1em 0;" id = "player2rpsImgRow">
             <div class="col-md-1"></div>
             <div class="col-md-3">
-                <button rspVal ="0" type="button" class="btn btn-danger" id="player2rockBtn" >ROCK</button> 
+                <button rspVal ="0" type="button" class="btn btn-danger playerBtn" id="player2rockBtn" >ROCK</button> 
             </div>
             <div class="col-md-3">
-                <button rspVal ="1" type="button" class="btn btn-danger" id="player2paperBtn">PAPER</button> 
+                <button rspVal ="1" type="button" class="btn btn-danger playerBtn" id="player2paperBtn">PAPER</button> 
             </div>
             <div class="col-md-3">
-                <button rspVal ="2" type="button" class="btn btn-danger" id="player2scissorBtn">SCISSOR</button>
+                <button rspVal ="2" type="button" class="btn btn-danger playerBtn" id="player2scissorBtn">SCISSOR</button>
             </div>
             <div class="col-md-1"></div>
           </div>
