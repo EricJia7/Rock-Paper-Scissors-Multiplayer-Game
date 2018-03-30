@@ -10,6 +10,9 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
+var databaseP1 = database.ref("player").child("player1");
+var databaseP2 = database.ref("player").child("player2");
+var databaseT = database.ref("playerTurn");
 
 var player1 = false;
 var player2 = false;
@@ -17,6 +20,10 @@ var isPlayer1Turn = false;
 var isPlayer2Turn = false;
 var player1Name;
 var player2Name;
+
+var p1ImgIdx = -1;
+var p2ImgIdx = -1;
+
 var onlinePlayer = 0;
 var currIndex = 0;
 var playerNum = 0;
@@ -62,8 +69,8 @@ function setPlayer(name) {
         $("#enterRow").empty();
         onlinePlayer = 1;
         player2 = true;
-        database.ref("player").child("player2").update({turn:false});
-        database.ref("player").child("player1").update({turn:true});
+        databaseP2.update({turn:false});
+        databaseP1.update({turn:true});
         database.ref().child("playerTurn").update({playerTurn : 1});
       }; 
       var newPlayer = {
@@ -199,8 +206,23 @@ function noticeDisplay() {
 
 $(".playerBtn").click(function(event){
   event.preventDefault();
-  var btnImgIndex = $(this).attr("rspVal");
-  console.log("~~~~~~~~~~~~~~" + btnImgIndex);
+  var btnImgIndex = parseInt($(this).attr("rspVal"));
+
+  if (isPlayer1Turn && player1 && player1Name != null && player2Name != null) {
+    p1ImgIdx = btnImgIndex;
+    $("#your1img").innerHTML = '<img src =" ' + imagelist[p1ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
+
+    databaseP1.update({rps:p1ImgIdx});
+    databaseT.update({playerTurn:2});
+
+  } else if (isPlayer1Turn) {
+    p2ImgIdx = btnImgIndex;
+    $("#your1img").innerHTML = '<img src =" ' + imagelist[p1ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
+    $("#your2img").innerHTML = '<img src =" ' + imagelist[p2ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
+    databaseP2.update({rps:p2ImgIdx});
+    databaseT.update({playerTurn:1})
+  };
+
 
 });
 
