@@ -13,6 +13,7 @@ var database = firebase.database();
 var databaseP1 = database.ref("player").child("player1");
 var databaseP2 = database.ref("player").child("player2");
 var databaseT = database.ref("playerTurn");
+var databaseTR = database.ref("playerTurn").child("roundFinish");
 
 var player1 = false;
 var player2 = false;
@@ -21,8 +22,10 @@ var isPlayer2Turn = false;
 var player1Name;
 var player2Name;
 
-var p1ImgIdx = -1;
-var p2ImgIdx = -1;
+console.log(player1,player2,isPlayer1Turn,isPlayer2Turn);
+
+var yourImgIdx = -1;
+var oppoImgIdx = -1;
 
 var onlinePlayer = 0;
 var currIndex = 0;
@@ -71,14 +74,14 @@ function setPlayer(name) {
         player2 = true;
         databaseP2.update({turn:false});
         databaseP1.update({turn:true});
-        database.ref().child("playerTurn").update({playerTurn : 1});
+        databaseT.set({playerTurn : 1});
       }; 
       var newPlayer = {
         name: name,
         win: 0,
         lose: 0,
         tie: 0,
-        rps:"",
+        rps:-1,
         turn: false,
       };
       database.ref("player").child(player[onlinePlayer]).set(newPlayer);
@@ -90,8 +93,6 @@ function setPlayer(name) {
 };
 
 function gameon() {
-  $("#resetDiv").hide();
-  database.ref().child("playerTurn").set({playerTurn : 1});
   $("#startBtn").click(function(event) {
     event.preventDefault();
     nameInput = $("#nameinput").val().trim();
@@ -147,7 +148,7 @@ database.ref("player/player1").on("value", function(snapshot){
     var playerStr = "player1";
     var playerStrOppo = "player2";
     player1Name = gameResult(snapshot.val(), playerStr, playerStrOppo, player2, player1); 
-  }
+  };
 },function(errorObject) {
   console.log("Errors handled: " + errorObject.code);
 });
@@ -157,51 +158,102 @@ database.ref("player/player2").on("value", function(snapshot){
     var playerStr = "player2";
     var playerStrOppo = "player1"
     player2Name = gameResult(snapshot.val(), playerStr, playerStrOppo, player1, player2);
-    noticeDisplay();
   };
 },function(errorObject) {
   console.log("Errors handled: " + errorObject.code);
 });
 
-database.ref("playerTurn").on("value",function(snapshot) {
-  noticeDisplay();
+databaseT.on("value",function(snapshot) {
   if(snapshot.val() != null) {
     if(snapshot.val().playerTurn === 1) {
       isPlayer1Turn = true;
       isPlayer2Turn = false;
+      console.log("ry!!!!")
     };
     if(snapshot.val().playerTurn === 2) {
       isPlayer1Turn = false;
       isPlayer2Turn = true;
-    }
+      console.log("ry!!!1")
+    };
+    noticeDisplay();
+  };
+  
+});
+
+function getResult() {
+
+  var list1 = new Array();
+  var list2 = new Array();
+  database.ref("player/player1").once("value", function(snapshot){
+    if(snapshot.val()!= null) {
+      list1 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose];
+  };
+  },function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+  });
+  database.ref("player/player2").once("value", function(snapshot){
+    if(snapshot.val()!= null) {
+      list2 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose];
+  };
+  },function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+  });
+  console.log(list1, list2);
+  return [list1,list2];
+};
+
+database.ref("playerTurn").child("roundFinish").on("value",function(snapshot) {
+  if(snapshot.val() != null) {
+    console.log("round finish is: " + snapshot.val().finish);
+    if(snapshot.val().finish) {
+      var [result1,result2] = getResult();
+      console.log(result1,result2);
+      $("#your1img").attr("src", imagelist[result1[0]]);
+      $("#your2img").attr("src", imagelist[result2[0]]);
+      if(winCheck(result1[0],result2[0])[0]){
+
+
+        databaseP2.update({"win": result2[1]+1});
+        databaseP1.update({"lose": result1[3]+1});
+      } else if (winCheck(result1[0],result2[0])[1]) {
+
+
+        databaseP1.update({"tie": result1[2]+1});
+        databaseP2.update({"tie": result2[2]+1 });
+      } else {
+
+        databaseP2.update({"lose": result2[3]+1 });
+        databaseP1.update({"win": result1[1]+1 });
+      };
+      databaseP1.update({"rps": -1});
+      databaseP2.update({"rps": -1});
+      databaseTR.update({"finish": false});
+    };
   };
 });
 
 function noticeDisplay() {
 
-  if(isPlayer1Turn && player1 && player1Name != null && player2Name != null) {
+  if(isPlayer1Turn && player1) {
     $("#playerNotice").empty();
     $("#playerNotice").append("<h3>Yo! It's Your Turn</h3>")
       .addClass("text-capitalize text-center notice-content")
   };
-  
-  if(isPlayer1Turn && player2 && player1Name != null && player2Name != null) {
+  if(isPlayer1Turn && player2) {
     $("#playerNotice").empty();
     $("#playerNotice").append("<h3>Yo! Waiting for " + player1Name.split(" ")[0] + " to choose</h3>")
     .addClass("text-capitalize text-center notice-content")
-    };
-
-    if(isPlayer2Turn && player2 && player1Name != null && player2Name != null) {
-      $("#playerNotice").empty();
-      $("#playerNotice").append("<h3>Yo! It's Your Turn</h3>")
-      .addClass("text-capitalize text-center notice-content")
-    };
-    
-    if(isPlayer2Turn && player1 && player1Name != null && player2Name != null) {
-      $("#playerNotice").empty();
-      $("#playerNotice").append("<h3>Yo! Waiting for " + player2Name.split(" ")[0] + " to choose</h3>")
-      .addClass("text-capitalize text-center notice-content")
-      };
+  };
+  if(isPlayer2Turn && player2) {
+    $("#playerNotice").empty();
+    $("#playerNotice").append("<h3>Yo! It's Your Turn</h3>")
+    .addClass("text-capitalize text-center notice-content")
+  };
+  if(isPlayer2Turn && player1) {
+    $("#playerNotice").empty();
+    $("#playerNotice").append("<h3>Yo! Waiting for " + player2Name.split(" ")[0] + " to choose</h3>")
+    .addClass("text-capitalize text-center notice-content")
+  };
 };
 
 $(".playerBtn").click(function(event){
@@ -209,23 +261,21 @@ $(".playerBtn").click(function(event){
   var btnImgIndex = parseInt($(this).attr("rspVal"));
 
   if (isPlayer1Turn && player1 && player1Name != null && player2Name != null) {
-    p1ImgIdx = btnImgIndex;
-    $("#your1img").innerHTML = '<img src =" ' + imagelist[p1ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
-
-    databaseP1.update({rps:p1ImgIdx});
+    yourImgIdx = btnImgIndex;
+    $("#your1img").attr("src", imagelist[yourImgIdx]);;
+    databaseP1.update({rps:yourImgIdx});
     databaseT.update({playerTurn:2});
-
-  } else if (isPlayer1Turn) {
-    p2ImgIdx = btnImgIndex;
-    $("#your1img").innerHTML = '<img src =" ' + imagelist[p1ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
-    $("#your2img").innerHTML = '<img src =" ' + imagelist[p2ImgIdx] +' "  alt="your pick display" height="200" width="200"/>';
-    databaseP2.update({rps:p2ImgIdx});
-    databaseT.update({playerTurn:1})
   };
 
+  if (isPlayer2Turn && player2 && player1Name != null && player2Name != null) {
+    yourImgIdx = btnImgIndex;
+    $("#your2img").attr("src", imagelist[yourImgIdx]);;
+    databaseP2.update({rps:yourImgIdx});
+    databaseTR.update({"finish": true});
+    databaseT.update({playerTurn:1});
+  };
 
 });
-
 
 gameon();
 
