@@ -1,10 +1,9 @@
 
-
 #playerNotice {
   position: relative;
-  font-size: 1.8em;
+  font-size: 2em;
   color:rgb(128, 184, 44);
-  bottom: -1em;
+  bottom: -1.4em;
 }
 
 #winNotice {
@@ -15,7 +14,6 @@
   bottom: 0.5em;
 }
 
-#resetDiv {
+#leaveBtn {
   color:white;
-  margin-bottom: 1em;
 }
