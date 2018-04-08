@@ -1,8 +1,21 @@
-.had-content {
-  color: white;
-  margin: 0;
+
+
+#playerNotice {
+  position: relative;
+  font-size: 1.8em;
+  color:rgb(128, 184, 44);
+  bottom: -1em;
 }
 
-.wlt-content {
+#winNotice {
+  position: relative;
+  font-size: 2.5em;
   color: tomato;
+  font-weight: bold;
+  bottom: 0.5em;
+}
+
+#resetDiv {
+  color:white;
+  margin-bottom: 1em;
 }

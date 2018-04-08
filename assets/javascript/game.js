@@ -22,8 +22,6 @@ var isPlayer2Turn = false;
 var player1Name;
 var player2Name;
 
-console.log(player1,player2,isPlayer1Turn,isPlayer2Turn);
-
 var yourImgIdx = -1;
 var oppoImgIdx = -1;
 
@@ -38,6 +36,8 @@ var player = {
 };
 
 var imagelist = ["assets/Images/rock.jpg","assets/Images/paper.jpg","assets/Images/scissors.jpg"];
+
+var gamePause = false;
 
 function winCheck(num1, num2) {
   var checkResult = [false,false]
@@ -67,9 +67,13 @@ function setPlayer(name) {
         $("#enterRow").empty();
         onlinePlayer = 0;
         player1 = true;
+        $("#playerNotice").css("visibility", "visible");
+        $("#resetDiv").css("visibility", "visible");
       }
       else if (playerNum == 1) {
         $("#enterRow").empty();
+        $("#playerNotice").css("visibility", "visible");
+        $("#resetDiv").css("visibility", "visible");
         onlinePlayer = 1;
         player2 = true;
         databaseP2.update({turn:false});
@@ -93,6 +97,9 @@ function setPlayer(name) {
 };
 
 function gameon() {
+  $("#resetDiv").css("visibility", "hidden");
+  $("#playerNotice").css("visibility", "hidden");
+  $("#winNotice").css("visibility", "hidden");
   $("#startBtn").click(function(event) {
     event.preventDefault();
     nameInput = $("#nameinput").val().trim();
@@ -141,8 +148,6 @@ function gameResult(snapshot, str1, str2, boolean1, boolean2) {
   return playerName;
 };
 
-var buttonFunction ={};
-
 database.ref("player/player1").on("value", function(snapshot){
   if(snapshot.val() != null) {
     var playerStr = "player1";
@@ -168,38 +173,55 @@ databaseT.on("value",function(snapshot) {
     if(snapshot.val().playerTurn === 1) {
       isPlayer1Turn = true;
       isPlayer2Turn = false;
-      console.log("ry!!!!")
     };
     if(snapshot.val().playerTurn === 2) {
       isPlayer1Turn = false;
       isPlayer2Turn = true;
-      console.log("ry!!!1")
     };
     noticeDisplay();
   };
-  
 });
 
 function getResult() {
-
   var list1 = new Array();
   var list2 = new Array();
   database.ref("player/player1").once("value", function(snapshot){
     if(snapshot.val()!= null) {
-      list1 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose];
+      list1 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose,snapshot.val().name];
   };
   },function(errorObject) {
     console.log("Errors handled: " + errorObject.code);
   });
   database.ref("player/player2").once("value", function(snapshot){
     if(snapshot.val()!= null) {
-      list2 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose];
+      list2 = [snapshot.val().rps,snapshot.val().win,snapshot.val().tie,snapshot.val().lose,snapshot.val().name];
   };
   },function(errorObject) {
     console.log("Errors handled: " + errorObject.code);
   });
   console.log(list1, list2);
   return [list1,list2];
+};
+
+function winLoseDisplay(str1, str2) {
+  $("#playerNotice").css("visibility", "hidden");
+  $("#winNotice").css("visibility", "visible");
+  gamePause = true;
+  if (str1 ==="win") {
+    $("#winNotice").text(str2 + " won!");
+  } else if (str1 === "tie") {
+    $("#winNotice").text("It's a Tie!")
+  };
+  setTimeout(function(){
+    $("#winNotice").css("visibility", "hidden");
+    gamePause = false;
+    databaseP1.update({"rps": -1});
+    databaseP2.update({"rps": -1});
+    databaseTR.update({"finish": false});
+    $("#playerNotice").css("visibility", "visible");
+    $("#your1img").attr("src","assets/Images/9-RPS-example.png");
+    $("#your2img").attr("src","assets/Images/9-RPS-example.png");
+  },3000);
 };
 
 database.ref("playerTurn").child("roundFinish").on("value",function(snapshot) {
@@ -211,48 +233,38 @@ database.ref("playerTurn").child("roundFinish").on("value",function(snapshot) {
       $("#your1img").attr("src", imagelist[result1[0]]);
       $("#your2img").attr("src", imagelist[result2[0]]);
       if(winCheck(result1[0],result2[0])[0]){
-
-
         databaseP2.update({"win": result2[1]+1});
         databaseP1.update({"lose": result1[3]+1});
+        winLoseDisplay("win",result2[4]);
       } else if (winCheck(result1[0],result2[0])[1]) {
-
-
         databaseP1.update({"tie": result1[2]+1});
         databaseP2.update({"tie": result2[2]+1 });
+        winLoseDisplay("tie","");
       } else {
-
         databaseP2.update({"lose": result2[3]+1 });
         databaseP1.update({"win": result1[1]+1 });
+        winLoseDisplay("win",result1[4]);
       };
-      databaseP1.update({"rps": -1});
-      databaseP2.update({"rps": -1});
-      databaseTR.update({"finish": false});
     };
   };
 });
 
 function noticeDisplay() {
-
   if(isPlayer1Turn && player1) {
     $("#playerNotice").empty();
-    $("#playerNotice").append("<h3>Yo! It's Your Turn</h3>")
-      .addClass("text-capitalize text-center notice-content")
+    $("#playerNotice").text("Yo! It's Your Turn")
   };
   if(isPlayer1Turn && player2) {
     $("#playerNotice").empty();
-    $("#playerNotice").append("<h3>Yo! Waiting for " + player1Name.split(" ")[0] + " to choose</h3>")
-    .addClass("text-capitalize text-center notice-content")
+    $("#playerNotice").text("Yo! Waiting for " + player1Name.split(" ")[0] + " to choose")
   };
   if(isPlayer2Turn && player2) {
     $("#playerNotice").empty();
-    $("#playerNotice").append("<h3>Yo! It's Your Turn</h3>")
-    .addClass("text-capitalize text-center notice-content")
+    $("#playerNotice").text("Yo! It's Your Turn")
   };
   if(isPlayer2Turn && player1) {
     $("#playerNotice").empty();
-    $("#playerNotice").append("<h3>Yo! Waiting for " + player2Name.split(" ")[0] + " to choose</h3>")
-    .addClass("text-capitalize text-center notice-content")
+    $("#playerNotice").text("Yo! Waiting for " + player2Name.split(" ")[0] + " to choose")
   };
 };
 
@@ -260,79 +272,25 @@ $(".playerBtn").click(function(event){
   event.preventDefault();
   var btnImgIndex = parseInt($(this).attr("rspVal"));
 
-  if (isPlayer1Turn && player1 && player1Name != null && player2Name != null) {
-    yourImgIdx = btnImgIndex;
-    $("#your1img").attr("src", imagelist[yourImgIdx]);;
-    databaseP1.update({rps:yourImgIdx});
-    databaseT.update({playerTurn:2});
-  };
-
-  if (isPlayer2Turn && player2 && player1Name != null && player2Name != null) {
-    yourImgIdx = btnImgIndex;
-    $("#your2img").attr("src", imagelist[yourImgIdx]);;
-    databaseP2.update({rps:yourImgIdx});
-    databaseTR.update({"finish": true});
-    databaseT.update({playerTurn:1});
-  };
+  if (!gamePause) {
+    if (isPlayer1Turn && player1 && player1Name != null && player2Name != null) {
+      yourImgIdx = btnImgIndex;
+      $("#your1img").attr("src", imagelist[yourImgIdx]);;
+      databaseP1.update({rps:yourImgIdx});
+      databaseT.update({playerTurn:2});
+    };
+  
+    if (isPlayer2Turn && player2 && player1Name != null && player2Name != null) {
+      yourImgIdx = btnImgIndex;
+      $("#your2img").attr("src", imagelist[yourImgIdx]);;
+      databaseP2.update({rps:yourImgIdx});
+      databaseTR.update({"finish": true});
+      databaseT.update({playerTurn:1});
+    };
+  }
 
 });
 
 gameon();
-
-// var round = 0;
-// var winnum = 0;
-// var losenum = 0;
-// var tienum = 0;
-
-// var roundDisplay = document.getElementById("numberofround");
-// var winDisplay = document.getElementById("numberofwin");
-// var loseDisplay = document.getElementById("numberoflose");
-// var tieDisplay = document.getElementById("numberoftie");
-// var yourImgDisplay = document.getElementById("yourimg");
-// var computerGuessDisplay = document.getElementById("comimg");
-// var computerimgindex = null;
-
-
-// function btnfunction(clicked_id) {
-
-//   clicked_id_num = Number(clicked_id);
-
-//   console.log("The current image array key for Player is:", clicked_id_num);
-
-//   yourImgDisplay.innerHTML = '<img src =" ' + imagelist[clicked_id_num] +' "  alt="your pick display" height="200" width="200"/>';
-//   round ++;
-//   roundDisplay.textContent = round;
-
-//   computerimgindex = getRandomInt(3);
-//   console.log("The current image array key for Computer is:", computerimgindex);
-//   computerGuessDisplay.innerHTML = '<img src =" ' + imagelist[computerimgindex] +' "  alt="your pick display" height="200" width="200"/>';
-
-//   var checkResult = winCheck(computerimgindex,clicked_id_num);
-
-//   if (checkResult[0]) {
-//     winnum++;
-//     winDisplay.textContent = winnum;
-//   } else if (checkResult[1]) {
-//     tienum++;
-//     tieDisplay.textContent = tienum;
-//   } else {
-//     losenum++;
-//     loseDisplay.textContent = losenum;
-//   }
-  
-// }
-
-// function resetGame() {
-//   round = 0;
-//   roundDisplay.textContent = round;
-//   winnum = 0;
-//   winDisplay.textContent = winnum;
-//   losenum = 0;
-//   loseDisplay.textContent = losenum;
-//   tienum = 0;
-//   tieDisplay.textContent = tienum;
-//   computerGuessDisplay.innerHTML = '<img src = "assets/Images/9-RPS-example.png"  height="200" width="200" alt="your pick display"/>';
-//   yourImgDisplay.innerHTML = '<img src = "assets/Images/9-RPS-example.png"  height="200" width="200" alt="your pick display"/>';
-// }
 
 
