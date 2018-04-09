@@ -27,9 +27,8 @@ var player2Name;
 var yourImgIdx = -1;
 var oppoImgIdx = -1;
 
-var onlinePlayer = 0;
 var currIndex = 0;
-var playerNum = 0;
+var playerNum;
 var nameInput;
 
 var player = {
@@ -50,10 +49,21 @@ function winCheck(num1, num2) {
   return checkResult;
 };
 
+var dBPlayerName;
+
+function checkPlayerName() {
+  database.ref("player").once("value").then(function(snapshot){
+    if(snapshot.val() != null) {
+      dBPlayerName = Object.keys(snapshot.val())[0];
+    }
+  });
+};
 
 function setPlayer(name) {
+  checkPlayerName();
   database.ref("player").once("value") 
     .then(function(snapshot){
+      var hasTwoPlayer = false; 
       playerNum = snapshot.numChildren();
       console.log("the number now is: " + playerNum);
       if (playerNum >= 2) {
@@ -77,7 +87,7 @@ function setPlayer(name) {
           return 1;
         });
       }
-      else if (playerNum == 1) {
+      else if (playerNum == 1 && dBPlayerName==="player1") {
         $("#enterRow").empty();
         $("#playerNotice").css("visibility", "visible");
         $("#resetDiv").css("visibility", "visible");
@@ -85,11 +95,24 @@ function setPlayer(name) {
         player2 = true;
         databaseP2.update({turn:false});
         databaseP1.update({turn:true});
-        databaseT.set({playerTurn : 1});
+        hasTwoPlayer = true;
         databaseView.transaction(function(currentRank){
           return currentRank + 1;
         });
-      }; 
+      } else if (playerNum == 1 && dBPlayerName==="player2") {
+        $("#enterRow").empty();
+        onlinePlayer = 0;
+        player1 = true;
+        databaseP2.update({turn:false});
+        databaseP1.update({turn:true});
+        hasTwoPlayer = true;
+        $("#playerNotice").css("visibility", "visible");
+        $("#resetDiv").css("visibility", "visible");
+        databaseView.transaction(function(currentRank){
+          return currentRank + 1;
+        });
+      };
+
       var newPlayer = {
         name: name,
         win: 0,
@@ -99,6 +122,10 @@ function setPlayer(name) {
         turn: false,
       };
       database.ref("player").child(player[onlinePlayer]).set(newPlayer);
+
+      if(hasTwoPlayer) {
+        databaseT.set({playerTurn : 1});
+      };
 
       $("#resetDiv").show();
     }).catch(function(error) {
