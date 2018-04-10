@@ -37,7 +37,7 @@ var player = {
   1: "player2",
 };
 
-var imagelist = ["assets/Images/rock.jpg","assets/Images/paper.jpg","assets/Images/scissors.jpg"];
+var imagelist = ["assets/Images/rockImg.jpg","assets/Images/paperImg.jpg","assets/Images/scissorsImg.jpg"];
 var gamePause = false;
 
 function winCheck(num1, num2) {
