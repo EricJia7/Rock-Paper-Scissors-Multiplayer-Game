@@ -16,6 +16,7 @@ var databaseP2 = database.ref("player").child("player2");
 var databaseT = database.ref("playerTurn");
 var databaseTR = database.ref("playerTurn").child("roundFinish");
 var databaseView = database.ref("viewer").child("number");
+var databaseChat = database.ref("chatlog");
 
 var player1 = false;
 var player2 = false;
@@ -372,6 +373,36 @@ $("#leaveBtn").click(function(event){
     databaseP2.remove();
     databaseT.remove();
   };
+});
+
+var chatLogNumber = 0;
+
+function writeChatDb(str) {
+  database.ref("chatlog").once("value") 
+  .then(function(snapshot){
+    chatLogNumber = snapshot.numChildren();
+    var textIndex = (chatLogNumber+1).toString();
+    if(player1) {
+      databaseChat.update({[textIndex]: player1Name +" : "+str + "&#013;&#010;"});
+    } else if(player2) {
+      databaseChat.update({[textIndex]: player2Name +" : "+str +"&#013;&#010;"});
+    };
+  });
+};
+
+$("#msgBtn").click(function(event){
+  event.preventDefault();
+  var textInput = $("#msgInput").val();
+  writeChatDb(textInput);
+  $("#msgInput").val("");
+});
+
+
+databaseChat.on("child_added",function(snapshot) {
+  var newInput = snapshot.val();
+  console.log(newInput);
+  $("#msgTextarea").append(newInput);
+  $("#msgTextarea").scrollTop($('#msgTextarea')[0].scrollHeight);
 });
 
 $(document).ready(function() {
