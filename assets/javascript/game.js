@@ -16,7 +16,8 @@ var databaseP2 = database.ref("player").child("player2");
 var databaseT = database.ref("playerTurn");
 var databaseTR = database.ref("playerTurn").child("roundFinish");
 var databaseView = database.ref("viewer").child("number");
-var databaseChat = database.ref("chatlog");
+var databaseChatP1 = database.ref("chatlog").child("player1");
+var databaseChatP2 = database.ref("chatlog").child("player2");
 
 var player1 = false;
 var player2 = false;
@@ -377,33 +378,41 @@ $("#leaveBtn").click(function(event){
 
 var chatLogNumber = 0;
 
-function writeChatDb(str) {
-  database.ref("chatlog").once("value") 
+function writeChatDb(str1,obj,str2) {
+  obj.once("value") 
   .then(function(snapshot){
     chatLogNumber = snapshot.numChildren();
     var textIndex = (chatLogNumber+1).toString();
-    if(player1) {
-      databaseChat.update({[textIndex]: player1Name +" : "+str + "&#013;&#010;"});
-    } else if(player2) {
-      databaseChat.update({[textIndex]: player2Name +" : "+str +"&#013;&#010;"});
-    };
+    obj.update({[textIndex]: str2 +" : "+str1 + "&#013;&#010;"});
   });
 };
 
 $("#msgBtn").click(function(event){
   event.preventDefault();
   var textInput = $("#msgInput").val();
-  writeChatDb(textInput);
+  if(player1) {
+    writeChatDb(textInput,databaseChatP1,player1Name);
+  } else if(player2) {
+    writeChatDb(textInput,databaseChatP2,player2Name);
+  };
   $("#msgInput").val("");
 });
 
 
-databaseChat.on("child_added",function(snapshot) {
+databaseChatP1.on("child_added",function(snapshot) {
   var newInput = snapshot.val();
   console.log(newInput);
   $("#msgTextarea").append(newInput);
   $("#msgTextarea").scrollTop($('#msgTextarea')[0].scrollHeight);
 });
+
+databaseChatP2.on("child_added",function(snapshot) {
+  var newInput = snapshot.val();
+  console.log(newInput);
+  $("#msgTextarea").append(newInput);
+  $("#msgTextarea").scrollTop($('#msgTextarea')[0].scrollHeight);
+});
+
 
 $(document).ready(function() {
   gameon();
